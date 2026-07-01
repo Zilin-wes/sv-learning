@@ -1,0 +1,10 @@
+# 02数组
+## 1.声明
+```systemverilog
+byte array_0 [8]; //8个独立
+byte array_1[0:7][0:3]; //8x4个独立的
+
+bit [3:0] array_2 [0:7][0:3]; // packed array unpacked 8x4个独立的a,a是4个装一起的空间
+bit [3:0][1:0] array_2 [0:7][0:3]; //次高级 最低级 array 最高级
+
+```
