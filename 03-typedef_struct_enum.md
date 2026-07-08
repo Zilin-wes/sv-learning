@@ -226,3 +226,48 @@ enum 的值本质上就是整数（默认 int）
 | **协议解析**    | 把数据包映射成结构体，按位切片       |
 | **整体赋值/比较** | 需要像向量一样操作整个结构体        |
 | **与C语言交互**  | C结构体通常是 packed 的，需要对齐 |
+
+## 6.string
+s.len() → 获取长度
+s.getc(index) 按索引取字符，索引从 0 开始
+s.putc(index, char) 将指定索引的字符替换
+s={} 是 SV 的拼接运算符
+s.substr(start, end) 提取从 start 到 end 的子串（包含两端）
+$sformat(s, "%s: score %0d", "sky", 60); → 格式化（存到s变量）
+$psprintf("%s: score %0d", "you", 100); → 格式化（不会存到s变量）相当于print
+```systemverilog
+string s;           // 声明一个 string 类型的变量 s
+
+initial begin
+    #900;           // 延迟 900 个时间单位
+    
+    $display("---- string test ----");
+    
+    s = "Hell SV ";                 // 给字符串赋值（注意末尾有个空格）
+    
+    $display("len of s is: %0d.", s.len());           // 获取字符串长度
+    $display("last char is: %c.", s.getc(s.len()-1));  // 获取最后一个字符
+    s.putc(s.len()-1, ",");        // 将最后一个字符替换为 ","
+    
+    s = {s, " give me money!"};     // 字符串拼接
+    
+    $display(s);                    // 打印当前字符串
+    $display("%s", s.substr(5,6));  // 提取子串，从索引5到索引6
+    
+    $sformat(s, "%s: score %0d", "sky", 60);   // 格式化字符串，结果存入 s
+    $display(s);
+    
+    s = $psprintf("%s: score %0d", "you", 100); // 格式化字符串，返回新字符串
+    $display(s);
+
+end
+```
+| 代码行                                                 | 输出                            |
+| --------------------------------------------------- | ----------------------------- |
+| `$display("len of s is: %0d.", s.len());`           | `len of s is: 8.`             |
+| `$display("last char is: %c.", s.getc(s.len()-1));` | `last char is: .`（空格，所以看起来空白） |
+| `$display(s);`（拼接后）                                 | `Hell SV, give me money!`     |
+| `$display("%s", s.substr(5,6));`                    | `SV`                          |
+| `$display(s);`（\$sformat 后）                         | `sky: score 60`               |
+| `$display(s);`（\$psprintf 后）                        | `you: score 100`              |
+
